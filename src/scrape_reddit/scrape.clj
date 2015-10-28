@@ -9,6 +9,7 @@
   :cache-key-fn :url
   :process-fn
   (fn [res ctx]
+    (def *c ctx)
     (def *r res)
     (Thread/sleep 20000)
     (let [next-url (-> (select res [:span.nextprev :a]) second :attrs :href)
@@ -28,7 +29,7 @@
 (defn seed [user-name]
   [{:url (str "https://www.reddit.com/user/"
               user-name
-              "?limit=100")
+              "?count=1050&after=t3_9vkjz")
     :user user-name
     :processor :reddit-user-comments}])
 
@@ -36,6 +37,8 @@
   "fire missiles."
 
   (scrape (seed "user-name") :processed-cache true :html-cache false)
+
+
 
 
   )

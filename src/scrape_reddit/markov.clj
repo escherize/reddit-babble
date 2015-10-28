@@ -1,6 +1,7 @@
 (ns scrape-reddit.markov
   (:require [clojure.string :as str]
-            [alandipert.enduro :as e]))
+            [alandipert.enduro :as e]
+            [net.cgrand.enlive-html :refer :all]))
 
 (defn word-chain [word-transitions]
   (reduce (fn [r t]
@@ -41,6 +42,10 @@
 
 (def c2 (e/file-atom #{} "resources/comments.clj"))
 
+(def corups (str/join " " (mapv text @c2)))
+
+(def word-chain (text->word-chain corups))
+
 (defn end-at-last-punctuation [text]
   (let [trimmed-to-last-punct (apply str (re-seq #"[\s\w]+[^.!?,]*[.!?,]" text))
         trimmed-to-last-word (apply str (re-seq #".*[^a-zA-Z]+" text))
@@ -60,12 +65,11 @@
        (#(concat % [(rand-nth [\! \! \? \. \. \.])]))
        (apply str)))
 
-(defn sentance []
-  (let [words (str/join " " @c2)
-        t2wc (memoize (fn [w] (text->word-chain w)))
-        word-chain (t2wc words)
-        prefix (str/join " " (rand-nth (keys word-chain)))
+(defn- sentance* [word-chain]
+  (let [prefix (str/join " " (rand-nth (keys word-chain)))
         raw-sentance (generate-text prefix word-chain)]
     (-> raw-sentance
         end-at-last-punctuation
         first-sentance)))
+
+(defn sentance [& _] (sentance* word-chain))

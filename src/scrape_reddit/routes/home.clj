@@ -4,7 +4,11 @@
             [ring.util.http-response :refer [ok]]
             [clojure.java.io :as io]
             [hiccup.page :as p]
-            [scrape-reddit.markov :refer [sentance]]))
+            [scrape-reddit.markov :refer [sentance]]
+            ;; todo: add best of?
+            ;;[alandipert.enduro :as e]
+            ))
+
 
 (defn page [& content]
   (p/html5
