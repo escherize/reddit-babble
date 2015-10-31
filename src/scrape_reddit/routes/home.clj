@@ -9,7 +9,6 @@
             ;;[alandipert.enduro :as e]
             ))
 
-
 (defn page [& content]
   (p/html5
    (p/include-js
